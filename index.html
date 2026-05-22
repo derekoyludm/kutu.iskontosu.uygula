@@ -199,28 +199,6 @@ function hesapla(){
     document.getElementById("sonuc").style.display = "block";
 }
 
-/* Telegram dış link zorlayıcı sistem */
-function openExternal(url){
-    if (window.Telegram && Telegram.WebApp) {
-        Telegram.WebApp.openLink(url, { try_instant_view: false });
-    } else {
-        window.open(url, "_blank");
-    }
-}
-
-document.addEventListener("click", function(e){
-    let el = e.target.closest("a");
-
-    if(!el) return;
-
-    let url = el.getAttribute("href");
-
-    if(url && url.startsWith("http")){
-        e.preventDefault();
-        openExternal(url);
-    }
-});
-
 /* Enter ile hesapla */
 document.querySelectorAll("input").forEach(input=>{
     input.addEventListener("keydown", e=>{
