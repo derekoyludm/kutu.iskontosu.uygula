@@ -43,6 +43,12 @@ input{
     text-align:center;
     border:1px solid #ccc;
     border-radius:8px;
+    -webkit-appearance:none;
+}
+
+input:focus{
+    outline:none;
+    border:2px solid #57c785;
 }
 
 .clear{
@@ -58,6 +64,9 @@ input{
     font-size:20px;
     font-weight:bold;
     user-select:none;
+    -webkit-user-select:none;
+    touch-action:manipulation;
+    flex-shrink:0;
 }
 
 .clear:hover{
@@ -77,10 +86,17 @@ button{
     border-radius:8px;
     cursor:pointer;
     font-weight:bold;
+    font-size:15px;
 }
 
-.p5{ background:#f1c40f; }
-.p10{ background:#e67e22; color:white; }
+.p5{
+    background:#f1c40f;
+}
+
+.p10{
+    background:#e67e22;
+    color:white;
+}
 
 .active{
     transform:scale(1.05);
@@ -103,6 +119,10 @@ button{
     display:none;
 }
 
+.result p{
+    margin:8px 0;
+}
+
 </style>
 </head>
 
@@ -111,28 +131,74 @@ button{
 <div class="box">
 
 <label>Tek Ürün Fiyatı</label>
+
 <div class="field">
-<input type="text" id="fiyat">
-<div class="clear" onclick="temizle('fiyat')">×</div>
+
+<input 
+type="tel"
+inputmode="decimal"
+pattern="[0-9.,]*"
+id="fiyat">
+
+<div class="clear"
+ontouchstart="temizle('fiyat'); event.preventDefault();"
+onmousedown="temizle('fiyat'); event.preventDefault();">
+×
+</div>
+
 </div>
 
 <label>Adet (Kutu / Çuval)</label>
+
 <div class="field">
-<input type="text" id="adet">
-<div class="clear" onclick="temizle('adet')">×</div>
+
+<input 
+type="tel"
+inputmode="decimal"
+pattern="[0-9.,]*"
+id="adet">
+
+<div class="clear"
+ontouchstart="temizle('adet'); event.preventDefault();"
+onmousedown="temizle('adet'); event.preventDefault();">
+×
+</div>
+
 </div>
 
 <div class="buttons">
-<button class="p5" onclick="indirimSec(5)">%5 İndirim</button>
-<button class="p10" onclick="indirimSec(10)">%10 İndirim</button>
+
+<button class="p5" onclick="indirimSec(5)">
+%5 İndirim
+</button>
+
+<button class="p10" onclick="indirimSec(10)">
+%10 İndirim
+</button>
+
 </div>
 
-<button class="calc" onclick="hesapla()">Hesapla</button>
+<button class="calc" onclick="hesapla()">
+Hesapla
+</button>
 
 <div class="result" id="sonuc">
-<p>Toplam: <b id="toplam"></b></p>
-<p>İndirimli Tutar: <b id="indirimli"></b></p>
-<p>Uygulanan İndirim: <b id="oran"></b></p>
+
+<p>
+Toplam:
+<b id="toplam"></b>
+</p>
+
+<p>
+İndirimli Tutar:
+<b id="indirimli"></b>
+</p>
+
+<p>
+Uygulanan İndirim:
+<b id="oran"></b>
+</p>
+
 </div>
 
 </div>
@@ -143,9 +209,16 @@ let indirimOrani = 0;
 
 function temizle(id){
 
-    document.getElementById(id).value = "";
+    const input = document.getElementById(id);
+
+    input.value = "";
+
+    setTimeout(()=>{
+        input.focus();
+    },0);
 
     document.getElementById("sonuc").style.display = "none";
+
     document.getElementById("toplam").innerText = "";
     document.getElementById("indirimli").innerText = "";
     document.getElementById("oran").innerText = "";
@@ -176,34 +249,64 @@ function indirimSec(orani){
     }
 }
 
+function sayiyaCevir(deger){
+
+    deger = deger
+    .replace(/\./g,"")
+    .replace(",", ".");
+
+    return parseFloat(deger) || 0;
+}
+
 function hesapla(){
 
-    let fiyat = parseFloat(document.getElementById("fiyat").value);
-    let adet = parseFloat(document.getElementById("adet").value);
+    let fiyat = sayiyaCevir(
+        document.getElementById("fiyat").value
+    );
+
+    let adet = sayiyaCevir(
+        document.getElementById("adet").value
+    );
 
     if(!fiyat || !adet){
+
         alert("Lütfen fiyat ve adet girin");
+
         return;
     }
 
     let toplam = fiyat * adet;
-    let indirimTutar = toplam * indirimOrani / 100;
-    let indirimli = toplam - indirimTutar;
 
-    document.getElementById("toplam").innerText = toplam.toFixed(2) + " TL";
-    document.getElementById("indirimli").innerText = indirimli.toFixed(2) + " TL";
+    let indirimTutar =
+        toplam * indirimOrani / 100;
+
+    let indirimli =
+        toplam - indirimTutar;
+
+    document.getElementById("toplam").innerText =
+        toplam.toFixed(2) + " TL";
+
+    document.getElementById("indirimli").innerText =
+        indirimli.toFixed(2) + " TL";
 
     document.getElementById("oran").innerText =
-        "%" + indirimOrani + " (" + indirimTutar.toFixed(2) + " TL)";
+        "%" + indirimOrani +
+        " (" + indirimTutar.toFixed(2) + " TL)";
 
-    document.getElementById("sonuc").style.display = "block";
+    document.getElementById("sonuc").style.display =
+        "block";
 }
 
-/* Enter ile hesapla */
+/* ENTER İLE HESAPLA */
+
 document.querySelectorAll("input").forEach(input=>{
+
     input.addEventListener("keydown", e=>{
+
         if(e.key === "Enter"){
+
             e.preventDefault();
+
             hesapla();
         }
     });
