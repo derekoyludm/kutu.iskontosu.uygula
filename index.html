@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>İndirim Hesaplama</title>
+
+<style>
+
+body{
+    font-family:Arial;
+    background:#f4f6f8;
+    display:flex;
+    justify-content:center;
+    padding:30px;
+}
+
+.box{
+    width:340px;
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+label{
+    font-weight:bold;
+    display:block;
+    margin-top:12px;
+    margin-bottom:6px;
+}
+
+.field{
+    display:flex;
+    gap:6px;
+    align-items:center;
+}
+
+input{
+    width:100%;
+    height:42px;
+    font-size:16px;
+    text-align:center;
+    border:1px solid #ccc;
+    border-radius:8px;
+}
+
+.clear{
+    width:42px;
+    height:42px;
+    background:#3498db;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:20px;
+    font-weight:bold;
+    user-select:none;
+}
+
+.clear:hover{
+    background:#2d85c1;
+}
+
+.buttons{
+    display:flex;
+    gap:10px;
+    margin-top:15px;
+}
+
+button{
+    flex:1;
+    height:40px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.p5{ background:#f1c40f; }
+.p10{ background:#e67e22; color:white; }
+
+.active{
+    transform:scale(1.05);
+    box-shadow:0 0 0 3px rgba(46,204,113,0.4);
+    border:2px solid #2ecc71;
+}
+
+.calc{
+    width:100%;
+    margin-top:15px;
+    background:#2ecc71;
+    color:white;
+}
+
+.result{
+    margin-top:15px;
+    background:#ecfdf5;
+    padding:12px;
+    border-radius:8px;
+    display:none;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<label>Tek Ürün Fiyatı</label>
+<div class="field">
+<input type="text" id="fiyat">
+<div class="clear" onclick="temizle('fiyat')">×</div>
+</div>
+
+<label>Adet (Kutu / Çuval)</label>
+<div class="field">
+<input type="text" id="adet">
+<div class="clear" onclick="temizle('adet')">×</div>
+</div>
+
+<div class="buttons">
+<button class="p5" onclick="indirimSec(5)">%5 İndirim</button>
+<button class="p10" onclick="indirimSec(10)">%10 İndirim</button>
+</div>
+
+<button class="calc" onclick="hesapla()">Hesapla</button>
+
+<div class="result" id="sonuc">
+<p>Toplam: <b id="toplam"></b></p>
+<p>İndirimli Tutar: <b id="indirimli"></b></p>
+<p>Uygulanan İndirim: <b id="oran"></b></p>
+</div>
+
+</div>
+
+<script>
+
+let indirimOrani = 0;
+
+function temizle(id){
+
+    document.getElementById(id).value = "";
+
+    document.getElementById("sonuc").style.display = "none";
+    document.getElementById("toplam").innerText = "";
+    document.getElementById("indirimli").innerText = "";
+    document.getElementById("oran").innerText = "";
+
+    indirimOrani = 0;
+
+    document.querySelectorAll(".p5, .p10").forEach(btn=>{
+        btn.classList.remove("active");
+    });
+}
+
+function indirimSec(orani){
+
+    indirimOrani = orani;
+
+    let btn5 = document.querySelector(".p5");
+    let btn10 = document.querySelector(".p10");
+
+    btn5.classList.remove("active");
+    btn10.classList.remove("active");
+
+    if(orani === 5){
+        btn5.classList.add("active");
+    }
+
+    if(orani === 10){
+        btn10.classList.add("active");
+    }
+}
+
+function hesapla(){
+
+    let fiyat = parseFloat(document.getElementById("fiyat").value);
+    let adet = parseFloat(document.getElementById("adet").value);
+
+    if(!fiyat || !adet){
+        alert("Lütfen fiyat ve adet girin");
+        return;
+    }
+
+    let toplam = fiyat * adet;
+    let indirimTutar = toplam * indirimOrani / 100;
+    let indirimli = toplam - indirimTutar;
+
+    document.getElementById("toplam").innerText = toplam.toFixed(2) + " TL";
+    document.getElementById("indirimli").innerText = indirimli.toFixed(2) + " TL";
+
+    document.getElementById("oran").innerText =
+        "%" + indirimOrani + " (" + indirimTutar.toFixed(2) + " TL)";
+
+    document.getElementById("sonuc").style.display = "block";
+}
+
+/* Enter ile hesapla */
+document.querySelectorAll("input").forEach(input=>{
+    input.addEventListener("keydown", e=>{
+        if(e.key === "Enter"){
+            e.preventDefault();
+            hesapla();
+        }
+    });
+});
+
+</script>
+
+</body>
+</html>
