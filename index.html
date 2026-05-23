@@ -45,12 +45,18 @@ input, select{
     border-radius:8px;
 }
 
+/* focus efekti aynı kalsın */
 input:focus, select:focus{
     outline:none;
     border:2px solid #57c785;
 }
 
-/* 🔵 CLEAR */
+/* sadece içi sarı */
+#indirim{
+    background:#fff7a6;
+}
+
+/* CLEAR */
 .clear{
     width:42px;
     height:42px;
@@ -77,7 +83,6 @@ input:focus, select:focus{
     margin-top:15px;
 }
 
-/* HESAPLA */
 .calc{
     flex:1;
     height:42px;
@@ -95,7 +100,6 @@ input:focus, select:focus{
     box-shadow:0 0 0 3px rgba(143,212,174,0.35);
 }
 
-/* RESET */
 .reset{
     width:42px;
     height:42px;
@@ -110,11 +114,6 @@ input:focus, select:focus{
 .reset.active{
     border-color:#e74c3c;
     box-shadow:0 0 0 3px rgba(231,76,60,0.35);
-}
-
-/* İSKONTO SARI */
-#indirim{
-    background:#fff7a6;
 }
 
 /* RESULT */
@@ -170,9 +169,7 @@ Hesapla
 <div class="result" id="sonuc">
 
 <p>Toplam: <b id="toplam"></b></p>
-
 <p><b>İndirimli Toplam:</b> <b id="indirimli"></b></p>
-
 <p>Oran: <b id="oran"></b></p>
 <p>İndirimli Tek Fiyat: <b id="birim"></b></p>
 
@@ -186,7 +183,6 @@ const hesaplaBtn = document.getElementById("hesaplaBtn");
 const resetBtn = document.getElementById("resetBtn");
 const sonuc = document.getElementById("sonuc");
 
-/* INPUT DEĞİŞİNCE RESET */
 document.querySelectorAll("input, select").forEach(el=>{
     el.addEventListener("input", ()=>{
         hesaplaBtn.classList.remove("active");
@@ -201,7 +197,6 @@ document.querySelectorAll("input, select").forEach(el=>{
     });
 });
 
-/* CLEAR */
 function temizle(id){
     document.getElementById(id).value = "";
     hesaplaBtn.classList.remove("active");
@@ -210,42 +205,32 @@ function temizle(id){
     setTimeout(()=>document.getElementById(id).focus(),0);
 }
 
-/* SAYI */
 function sayiyaCevir(v){
     return parseFloat(v.replace(/\./g,"").replace(",", ".")) || 0;
 }
 
-/* HESAPLA */
 function hesapla(){
 
     let fiyat = sayiyaCevir(document.getElementById("fiyat").value);
     let adet = sayiyaCevir(document.getElementById("adet").value);
-    let oran = parseFloat(document.getElementById("indirim").value);
-
-    if(!fiyat || !adet){
-        alert("Eksik bilgi");
-        return;
-    }
+    let oran = parseFloat(document.getElementById("indirim").value) || 0;
 
     let toplam = fiyat * adet;
     let indirim = toplam * oran / 100;
     let sonucT = toplam - indirim;
 
     document.getElementById("toplam").innerText = toplam.toFixed(2);
-
     document.getElementById("indirimli").innerText = sonucT.toFixed(2);
-
     document.getElementById("oran").innerText =
         "%" + oran + " (" + indirim.toFixed(2) + " TL)";
 
     document.getElementById("birim").innerText =
-        (sonucT / adet).toFixed(2) + " TL";
+        adet ? (sonucT / adet).toFixed(2) + " TL" : "0.00 TL";
 
     sonuc.style.display = "block";
     hesaplaBtn.classList.add("active");
 }
 
-/* RESET */
 function sifirla(e){
 
     e.preventDefault();
@@ -256,11 +241,9 @@ function sifirla(e){
     sonuc.style.display = "none";
 
     hesaplaBtn.classList.remove("active");
-
     resetBtn.classList.add("active");
 }
 
-/* ENTER NAVİGASYON (BUG FIX) */
 const alanlar = Array.from(document.querySelectorAll("input, select"));
 
 alanlar.forEach((el, i) => {
