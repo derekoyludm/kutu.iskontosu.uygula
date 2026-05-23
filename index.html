@@ -73,8 +73,13 @@ input:focus, select:focus{
     flex-shrink:0;
 }
 
-.clear:hover{ background:#2d85c1; }
-.clear:active{ transform:scale(0.92); }
+.clear:hover{
+    background:#2d85c1;
+}
+
+.clear:active{
+    transform:scale(0.92);
+}
 
 /* BUTTON ROW */
 .button-row{
@@ -138,13 +143,13 @@ input:focus, select:focus{
 
 <label>Tek Ürün Fiyatı</label>
 <div class="field">
-<input type="tel" id="fiyat">
+<input type="text" inputmode="decimal" id="fiyat">
 <div class="clear" onclick="temizle('fiyat')">×</div>
 </div>
 
 <label>Adet</label>
 <div class="field">
-<input type="tel" id="adet">
+<input type="text" inputmode="decimal" id="adet">
 <div class="clear" onclick="temizle('adet')">×</div>
 </div>
 
@@ -184,6 +189,7 @@ const resetBtn = document.getElementById("resetBtn");
 const sonuc = document.getElementById("sonuc");
 
 document.querySelectorAll("input, select").forEach(el=>{
+
     el.addEventListener("input", ()=>{
         hesaplaBtn.classList.remove("active");
         resetBtn.classList.remove("active");
@@ -195,76 +201,124 @@ document.querySelectorAll("input, select").forEach(el=>{
         resetBtn.classList.remove("active");
         sonuc.style.display = "none";
     });
+
 });
 
 function temizle(id){
+
     document.getElementById(id).value = "";
+
     hesaplaBtn.classList.remove("active");
     resetBtn.classList.remove("active");
+
     sonuc.style.display = "none";
-    setTimeout(()=>document.getElementById(id).focus(),0);
+
+    setTimeout(()=>{
+        document.getElementById(id).focus();
+    },0);
 }
 
 function sayiyaCevir(v){
-    return parseFloat(v.replace(/\./g,"").replace(",", ".")) || 0;
+
+    return parseFloat(
+        v.replace(/\./g,"").replace(",", ".")
+    ) || 0;
 }
 
 function hesapla(){
 
-    let fiyat = sayiyaCevir(document.getElementById("fiyat").value);
-    let adet = sayiyaCevir(document.getElementById("adet").value);
-    let oran = parseFloat(document.getElementById("indirim").value) || 0;
+    let fiyat = sayiyaCevir(
+        document.getElementById("fiyat").value
+    );
+
+    let adet = sayiyaCevir(
+        document.getElementById("adet").value
+    );
+
+    let oran = parseFloat(
+        document.getElementById("indirim").value
+    ) || 0;
 
     let toplam = fiyat * adet;
+
     let indirim = toplam * oran / 100;
+
     let sonucT = toplam - indirim;
 
-    document.getElementById("toplam").innerText = toplam.toFixed(2);
-    document.getElementById("indirimli").innerText = sonucT.toFixed(2);
+    document.getElementById("toplam").innerText =
+        toplam.toFixed(2) + " TL";
+
+    document.getElementById("indirimli").innerText =
+        sonucT.toFixed(2) + " TL";
+
     document.getElementById("oran").innerText =
         "%" + oran + " (" + indirim.toFixed(2) + " TL)";
 
     document.getElementById("birim").innerText =
-        adet ? (sonucT / adet).toFixed(2) + " TL" : "0.00 TL";
+        adet
+        ? (sonucT / adet).toFixed(2) + " TL"
+        : "0.00 TL";
 
     sonuc.style.display = "block";
+
     hesaplaBtn.classList.add("active");
+
+    resetBtn.classList.remove("active");
 }
 
 function sifirla(e){
 
     e.preventDefault();
 
-    document.querySelectorAll("input").forEach(i=>i.value="");
+    document.querySelectorAll("input").forEach(i=>{
+        i.value = "";
+    });
+
     document.getElementById("indirim").selectedIndex = 0;
 
     sonuc.style.display = "none";
 
     hesaplaBtn.classList.remove("active");
+
     resetBtn.classList.add("active");
 }
 
-const alanlar = Array.from(document.querySelectorAll("input, select"));
+const alanlar = Array.from(
+    document.querySelectorAll("input, select")
+);
 
-alanlar.forEach((el, i) => {
-    el.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
+alanlar.forEach((el, i)=>{
+
+    el.addEventListener("keydown", (e)=>{
+
+        if(e.key === "Enter"){
+
             e.preventDefault();
 
             el.blur();
 
             let next = alanlar[i + 1];
 
-            if (next) {
-                setTimeout(() => {
+            if(next){
+
+                setTimeout(()=>{
+
                     next.focus();
-                    if (next.tagName === "INPUT") next.select();
-                }, 0);
-            } else {
+
+                    if(next.tagName === "INPUT"){
+                        next.select();
+                    }
+
+                },0);
+
+            }else{
+
                 hesapla();
+
             }
         }
     });
+
 });
 
 </script>
