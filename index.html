@@ -2,7 +2,8 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- 🟢 Mobil cihazlarda veri girerken otomatik yakınlaşmayı (zoom) kesin olarak engelleyen meta etiket -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, user-scalable=no">
 <title>İndirim Hesaplama</title>
 
 <style>
@@ -31,6 +32,7 @@ body{
     padding:20px;
     border-radius:12px;
     box-shadow:0 5px 15px rgba(0,0,0,0.1);
+    margin: auto; /* Ekstra dengeli ortalama sağlar */
 }
 
 label{
@@ -51,12 +53,17 @@ label{
 input, select{
     width:100%;
     height:42px;
-    font-size:16px;
+    font-size:16px; /* 🟢 Yakınlaşmayı önleyen kritik sınır (Minimum 16px) */
     text-align:center;
     border:1.5px solid #c9d2dc;
     border-radius:8px;
     background:#fff;
     transition:.15s;
+}
+
+/* 🟢 Odaklanıldığında tarayıcının yazı boyutunu küçültüp yakınlaşma yapmasını engelleme */
+input:focus, select:focus {
+    font-size: 16px !important;
 }
 
 /* 📱 SELECT KUTUSU MOBİL SIFIRLAMA VE OK İŞARETİ */
@@ -186,6 +193,7 @@ input:focus, select:focus{
 
 <label>Tek Ürün Fiyatı</label>
 <div class="field">
+<!-- 🟢 iPhone klavyesinde hem virgülü hem de Enter (Git) tuşunu açan modern inputmode yapısı -->
 <input type="text" inputmode="decimal" id="fiyat">
 <div class="clear" ontouchstart="temizle(event,'fiyat')" onclick="temizle(event,'fiyat')">×</div>
 </div>
