@@ -12,12 +12,16 @@
     -webkit-tap-highlight-color: transparent;
 }
 
+/* 💻📱 HEM TELEFON HEM BİLGİSAYARDA DİKEY VE YATAY ORTALAMA */
 body{
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
     background:#f4f6f8;
     display:flex;
     justify-content:center;
-    padding:30px;
+    align-items:center;
+    min-height: 100vh;
+    margin: 0;
+    padding:20px;
 }
 
 .box{
@@ -241,7 +245,6 @@ document.querySelectorAll("input, select").forEach(el=>{
         sonuc.style.display = "none";
     });
     
-    // Tıklandığında eski veriyi otomatik seçme konforu
     if(el.tagName === "INPUT") {
         el.addEventListener("focus", () => {
             setTimeout(() => { el.select(); }, 50);
